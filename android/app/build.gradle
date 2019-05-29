@@ -112,6 +112,16 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    signingConfigs {
+        release {
+            if (project.hasProperty('ControleDeGastos_RELEASE_STORE_FILE')) {
+                storeFile file(ControleDeGastos_RELEASE_STORE_FILE)
+                storePassword ControleDeGastos_RELEASE_STORE_PASSWORD
+                keyAlias ControleDeGastos_RELEASE_KEY_ALIAS
+                keyPassword ControleDeGastos_RELEASE_KEY_PASSWORD
+            }
+        }
+      }
     splits {
         abi {
             reset()
@@ -122,6 +132,7 @@ android {
     }
     buildTypes {
         release {
+                signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

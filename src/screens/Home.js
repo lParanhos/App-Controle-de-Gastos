@@ -3,7 +3,8 @@ import { Platform, StyleSheet, Text, View } from 'react-native';
 import Informacoes from '../components/Informacoes';
 
 export default class App extends Component {
-  render() {
+
+   render() {
     return (
       <View style={styles.container}>
         <Informacoes />
@@ -16,8 +17,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-   // alignItems: 'center',
-   marginTop: '50%'
+    // alignItems: 'center',
+    marginTop: '50%'
   },
   center: {
     marginTop: 30,

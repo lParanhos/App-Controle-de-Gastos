@@ -1,18 +1,30 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ToastAndroid, TouchableHighlight } from 'react-native';
+import {
+    View, Text, FlatList, StyleSheet, TouchableOpacity,
+    Alert, ToastAndroid, TouchableHighlight, ActivityIndicator
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 export default class Gasto extends Component {
 
-    state = {
-        gastos: [],
+    constructor(props) {
+        super(props);
+        this.state = {
+            loading: true,
+            gastos: [],
+
+        }
+    }
+    componentDidMount() {
+        this.refresh();
     }
 
-    componentWillMount() {
+    refresh = () => {
+        this.setState({ loading: true })
         fetch('https://projetogastos.herokuapp.com/gastos')
             .then(res => res.json())
-            .then(gastos => { this.setState({ gastos }) })
+            .then(gastos => { this.setState({ loading: false, gastos }) })
     }
 
     handleDelete = (id) => {
@@ -39,6 +51,7 @@ export default class Gasto extends Component {
                                  * um array com os item que restaram no banco
                                  */
                                 ToastAndroid.show('Excluido com sucesso !', ToastAndroid.LONG);
+                                this.refresh();
                             })
                             .catch(err => {
                                 console.log(err);
@@ -51,39 +64,45 @@ export default class Gasto extends Component {
 
 
     render() {
+        const { loading } = this.state;
         const { navigate } = this.props.navigation;
         console.info(navigate)
         return (
             <View style={styles.container}>
                 <View style={styles.topo}>
                     <Text style={styles.titulo}>Registro de Gastos</Text>
+                    <TouchableOpacity onPress={() => this.refresh()}>
+                        <Icon name='refresh' size={30} color='blue' />
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigate('AddGasto')}>
                         <Icon name='plus-square' size={30} color='blue' />
                     </TouchableOpacity>
                 </View>
-                <FlatList data={this.state.gastos}
-                    keyExtractor={item => item.id}
-                    renderItem={({ item }) => {
-                        return (
-                            <TouchableHighlight onLongPress={() => this.handleDelete(item.id)}
-                                onPress={() => navigate('EditGasto', {
-                                    itemID: item.id,
-                                    itemLocal: item.local,
-                                    itemValor: item.valor
-                                })}
-                            >
-                                <View style={styles.resgistro} >
-                                    <View>
-                                        <Text style={styles.local}>{item.local}</Text>
-                                        <Text style={styles.info}>Parcela: </Text>
-                                        <Text style={styles.info}>Data de lançamento: </Text>
+                {loading ? (<ActivityIndicator size={100} color="#0000ff" />) : (
+                    <FlatList data={this.state.gastos}
+                        keyExtractor={item => item.id}
+                        renderItem={({ item }) => {
+                            return (
+                                <TouchableHighlight onLongPress={() => this.handleDelete(item.id)}
+                                    onPress={() => navigate('EditGasto', {
+                                        itemID: item.id,
+                                        itemLocal: item.local,
+                                        itemValor: item.valor
+                                    })}
+                                >
+                                    <View style={styles.resgistro} >
+                                        <View>
+                                            <Text style={styles.local}>{item.local}</Text>
+                                            <Text style={styles.info}>Parcela: </Text>
+                                            <Text style={styles.info}>Data de lançamento: </Text>
+                                        </View>
+                                        <Text style={styles.valor}>R$ {item.valor}</Text>
                                     </View>
-                                    <Text style={styles.valor}>R$ {item.valor}</Text>
-                                </View>
-                            </TouchableHighlight>
-                        )
-                    }}
-                />
+                                </TouchableHighlight>
+                            )
+                        }}
+                    />
+                )}
             </View>
         );
     }
@@ -120,7 +139,7 @@ const styles = StyleSheet.create({
     local: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#050505' 
+        color: '#050505'
     },
     valor: {
         justifyContent: 'flex-start',
@@ -130,7 +149,7 @@ const styles = StyleSheet.create({
     },
     info: {
         color: '#050505'
-        
+
     }
 
 })

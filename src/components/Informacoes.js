@@ -1,42 +1,37 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text, ActivityIndicator, ToastAndroid } from 'react-native';
 
 
 export default class Informações extends Component {
 
-    state = {
-        total: '',
-        salarios: {},
-    }
-
-    componentWillMount() {
-        fetch('https://projetogastos.herokuapp.com/valores')
-            .then(res => res.json())
-            .then(valores => this.setState({ total: valores }))
-
-        fetch('https://projetogastos.herokuapp.com/salarios')
-            .then(res => res.json())
-            .then(salarios => this.setState({ salarios: salarios[0] }))
-    }
     render() {
+        const { total, receber } = this.props;
 
-        const totalSalarios = this.state.salarios.salarioLeandro + this.state.salarios.salarioSamira
-        console.log(this.state.salarios)
+        let totalSemVirgula = total.replace(",", '');
+        let receberSemVirgula = receber.replace(",", '');
+        let sobrou = receberSemVirgula - totalSemVirgula;
+        let sobrouConvert = sobrou.toLocaleString('pt-br', { minimumFractionDigits: 2 });
         return (
             <View>
                 <View style={styles.container}>
                     <View style={styles.bloco}>
-                        <Text style={styles.valor}>R$ {this.state.total}</Text>
+                        <Text style={styles.valor}>
+                            <Text style={styles.real}>R$</Text> {total}
+                        </Text>
                         <Text style={styles.texto}>Total Gasto no mês</Text>
                     </View>
                     <View style={styles.bloco}>
-                        <Text style={styles.valor}>R$ {parseInt(totalSalarios)} </Text>
+                        <Text style={styles.valor}>
+                            <Text style={styles.real}>R$</Text> {receber}
+                        </Text>
                         <Text style={styles.texto}>Dinheiro a receber</Text>
                     </View>
                 </View>
-                <View style={styles.center}>
-                    <Text style={styles.texto}>Você tem sobrando:</Text>
-                    <Text style={styles.valor}>R$ {parseInt(totalSalarios) - this.state.total}</Text>
+                <View style={styles.centerCard}>
+                    <Text style={styles.valor}>
+                        <Text style={styles.real}>R$</Text> {sobrouConvert}
+                    </Text>
+                    <Text style={styles.texto}>Você tem sobrando</Text>
                 </View>
             </View>
         );
@@ -49,17 +44,36 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     bloco: {
-        alignItems: 'center'
+        backgroundColor: '#FFF',
+        width: 190,
+        height: 150,
+        alignItems: 'center',
+        borderRadius: 4,
+        borderWidth: 0.5,
+        borderColor: '#d6d7da'
+    },
+    real: {
+        fontSize: 10,
+        fontWeight: 'bold'
     },
     valor: {
-        fontSize: 40,
+        padding: 10,
+        marginTop: 30,
+        marginBottom: 20,
+        textAlign: 'justify',
+        fontSize: 35,
         color: '#0d05a8'
     },
     texto: {
         color: '#070707'
     },
-    center: {
+    centerCard: {
         marginTop: 30,
-        alignItems: 'center'
+        height: 150,
+        alignItems: 'center',
+        backgroundColor: '#FFFF',
+        borderRadius: 4,
+        borderWidth: 0.5,
+        borderColor: '#d6d7da'
     }
 })

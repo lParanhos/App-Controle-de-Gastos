@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
     View, TextInput, TouchableOpacity,
-    StyleSheet, Dimensions, Text, Alert, Image, ToastAndroid
+    StyleSheet, Dimensions, Text, Alert, ActivityIndicator, ToastAndroid
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -9,16 +9,32 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 export default class FormGastos extends Component {
 
     state = {
+        loading: false,
         local: this.props.local ? this.props.local : '',
         valor: this.props.valor ? this.props.valor : '',
-        edit: this.props.edit
+        edit: this.props.edit,
     }
 
-    
+
     handleSubmit = (id) => {
+        this.setState({ loading: true })
+        let data = new Date();
+        let dia = data.getDate();
+        if (dia < 10) {
+            dia = "0" + dia;
+        }
+
+        let mes = data.getMonth() + 1;
+        if (mes < 10) {
+            mes = "0" + mes;
+        }
+
+        let ano = data.getFullYear();
+        let dataFormatada = dia + "/" + mes + "/" + ano;
         let submit = {
             Local: this.state.local,
-            Valor: this.state.valor
+            Valor: this.state.valor,
+            Data: dataFormatada
         }
         let text = id ? 'editar' : 'adicionar';
         Alert.alert(
@@ -26,7 +42,7 @@ export default class FormGastos extends Component {
             `Tem certeza que deseja ${text} esse registro ?`,
             [
                 {
-                    text: 'Cancel',
+                    text: 'Cancelar',
                     onPress: () => console.log('Cancel Pressed'),
                     style: 'cancel',
                 },
@@ -49,12 +65,14 @@ export default class FormGastos extends Component {
                         })
                             .then(res => {
                                 let msg = id ? 'Editado' : 'Adicionado';
+                                this.setState({ loading: false })
                                 msg === 'Editado' ? null : this.setState({ local: '', valor: '' })
                                 ToastAndroid.show(`${msg} com sucesso !`,
                                     ToastAndroid.LONG);
                             })
                             .catch(err => {
                                 console.log(err)
+                                this.setState({ loading: false })
                                 Alert.alert('Ops ! Problema no servidor, tente novamente em alguns instantes')
                             })
                     }
@@ -66,6 +84,7 @@ export default class FormGastos extends Component {
     }
 
     render() {
+        console.log("aqui => ",this.state)
         return (
             <View style={styles.container}>
                 <TextInput style={styles.TextInputStyleClass} autoFocus={true}
@@ -74,10 +93,12 @@ export default class FormGastos extends Component {
                 <TextInput style={styles.TextInputStyleClass} value={this.state.valor}
                     placeholder='Valor gasto..' keyboardType={'numeric'}
                     onChangeText={valor => this.setState({ valor })} />
-                <TouchableOpacity style={styles.button}
-                    onPress={() => this.handleSubmit(this.props.id ? this.props.id : '')}>
-                    <Text style={styles.textButton}>Salvar</Text>
-                </TouchableOpacity>
+                {this.state.loading ? null :
+                    <TouchableOpacity style={styles.button}
+                        onPress={() => this.handleSubmit(this.props.id ? this.props.id : '')}>
+                        <Text style={styles.textButton}>Salvar</Text>
+                    </TouchableOpacity>
+                }
             </View>
         );
     }

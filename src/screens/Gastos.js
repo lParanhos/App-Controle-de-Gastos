@@ -31,7 +31,7 @@ export default class Gasto extends Component {
         Alert.alert('Aviso !', 'Deseja mesmo excluir esse registro ? ',
             [
                 {
-                    text: 'Cancel',
+                    text: 'Cancelar',
                     onPress: () => console.log('Cancel Pressed'),
                     style: 'cancel',
                 },
@@ -66,7 +66,7 @@ export default class Gasto extends Component {
     render() {
         const { loading } = this.state;
         const { navigate } = this.props.navigation;
-        console.info(navigate)
+        console.info("gastos=>", this.state.gastos)
         return (
             <View style={styles.container}>
                 <View style={styles.topo}>
@@ -94,7 +94,7 @@ export default class Gasto extends Component {
                                         <View>
                                             <Text style={styles.local}>{item.local}</Text>
                                             <Text style={styles.info}>Parcela: </Text>
-                                            <Text style={styles.info}>Data de lançamento: </Text>
+                                            <Text style={styles.info}>Data de lançamento: <Text style={styles.data}>{item.data} </Text> </Text>
                                         </View>
                                         <Text style={styles.valor}>R$ {item.valor}</Text>
                                     </View>
@@ -149,7 +149,9 @@ const styles = StyleSheet.create({
     },
     info: {
         color: '#050505'
-
+    },
+    data: {
+        fontWeight: 'bold'
     }
 
 })

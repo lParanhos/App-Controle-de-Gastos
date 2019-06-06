@@ -17,7 +17,10 @@ export default class Gasto extends Component {
         }
     }
     componentDidMount() {
-        this.refresh();
+        const { navigation } = this.props
+        this.focusListener = navigation.addListener("didFocus", () => {
+            this.refresh();
+        })
     }
 
     refresh = () => {
@@ -71,9 +74,6 @@ export default class Gasto extends Component {
             <View style={styles.container}>
                 <View style={styles.topo}>
                     <Text style={styles.titulo}>Registro de Gastos</Text>
-                    <TouchableOpacity onPress={() => this.refresh()}>
-                        <Icon name='refresh' size={30} color='blue' />
-                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigate('AddGasto')}>
                         <Icon name='plus-square' size={30} color='blue' />
                     </TouchableOpacity>

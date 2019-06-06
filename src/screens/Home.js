@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Platform, StyleSheet, View, ActivityIndicator, Text, Button } from 'react-native';
 import Informacoes from '../components/Informacoes';
+import { withNavigationFocus } from 'react-navigation';
 
-export default class App extends Component {
+class App extends Component {
 
   state = {
     loading: true,
@@ -10,7 +11,17 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    this.refresh();
+    const { navigation } = this.props;
+    this.focusListener = navigation.addListener("didFocus", () => {
+      // The screen is focused
+      // Call any action
+      this.refresh();
+    });
+  }
+
+  componentWillUnmount() {
+    // Remove the event listener
+    this.focusListener.remove();
   }
 
   refresh = () => {
@@ -36,8 +47,6 @@ export default class App extends Component {
         {loading ?
           (<ActivityIndicator size={100} color="#0000ff" />) :
           (<Informacoes total={values.totalGasto} receber={values.aReceber} />)}
-        <Button style={styles.botao} title="Atualizar"
-          onPress={() => this.refresh()} />
       </View>
     );
   }
@@ -50,8 +59,6 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     marginTop: 100
   },
-  botao: {
-    backgroundColor: '#0541ba',
-  }
 });
 
+export default withNavigationFocus(App);

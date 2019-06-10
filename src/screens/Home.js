@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Platform, StyleSheet, View, ActivityIndicator, Text, Button } from 'react-native';
+import { Platform, ImageBackground, StyleSheet, View, ActivityIndicator, Text, Button } from 'react-native';
 import Informacoes from '../components/Informacoes';
 import { withNavigationFocus } from 'react-navigation';
-
+import CardInfo from '../components/CardInfo';
 class App extends Component {
 
   state = {
@@ -43,22 +43,33 @@ class App extends Component {
     const { loading, values } = this.state;
     console.log("=>", values)
     return (
-      <View style={styles.container}>
-        {loading ?
-          (<ActivityIndicator size={100} color="#0000ff" />) :
-          (<Informacoes total={values.totalGasto} receber={values.aReceber} />)}
-      </View>
+      <ImageBackground style={styles.imageBackground}
+        source={require('../assets/papersco-s_Do9Re52y.jpg')}>
+        <View style={styles.container}>
+          <Text style={styles.titulo}>Resumo</Text>
+          {loading ?
+            (<ActivityIndicator size={100} color="#0000ff" />) :
+            (<CardInfo total={values.totalGasto} receber={values.aReceber} />)}
+        </View>
+      </ImageBackground>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  imageBackground: {
+    width: '100%',
+    height: '100%'
+  },
   container: {
     flex: 1,
-    padding: 10,
     // alignItems: 'center',
-    marginTop: 100
   },
+  titulo: {
+    marginTop: 40,
+    marginLeft: 30,
+    fontSize: 30
+  }
 });
 
 export default withNavigationFocus(App);

@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { Platform, ImageBackground, StyleSheet, View, ActivityIndicator, Text, Button } from 'react-native';
-import Informacoes from '../components/Informacoes';
+import { ImageBackground, StyleSheet, View, ActivityIndicator, Text, ScrollView } from 'react-native';
 import { withNavigationFocus } from 'react-navigation';
 import CardInfo from '../components/CardInfo';
+import ListaPoupanca from '../components/ListaPoupanca';
+import Vencimentos from '../components/Vencimentos';
 class App extends Component {
 
   state = {
     loading: true,
-    values: {}
+    values: {},
   }
 
   componentDidMount() {
@@ -44,12 +45,19 @@ class App extends Component {
     console.log("=>", values)
     return (
       <ImageBackground style={styles.imageBackground}
-        source={require('../assets/papersco-s_Do9Re52y.jpg')}>
+        source={require('../assets/img/backGround.jpg')}>
         <View style={styles.container}>
           <Text style={styles.titulo}>Resumo</Text>
           {loading ?
             (<ActivityIndicator size={100} color="#0000ff" />) :
-            (<CardInfo total={values.totalGasto} receber={values.aReceber} />)}
+            (<>
+              <CardInfo total={values.totalGasto} receber={values.aReceber} />
+              <ScrollView style={{marginTop: 10}}>
+                <ListaPoupanca />
+                <Vencimentos />
+              </ScrollView>
+            </>
+            )}
         </View>
       </ImageBackground>
     );

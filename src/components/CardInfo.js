@@ -21,7 +21,7 @@ const CadrInfo = (props) => {
     { mes: "Dezembro", valor: "12" },
     ]
     return (
-        <Card>
+        <Card containerStyle={{ borderRadius: 10 }}>
             <Picker>
                 {meses.map((mes, i) =>
                     <Picker.Item key={mes.valor} label={mes.mes} value={mes.valor} />

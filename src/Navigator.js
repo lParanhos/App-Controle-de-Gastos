@@ -17,7 +17,11 @@ const GastosRoutes = createStackNavigator({
     AddGasto: { screen: AddGastos, navigationOptions: { title: 'Adicionar' } },
     EditGasto: { screen: EditGastos, navigationOptions: { title: 'Editar' } },
 
-}, { initialRouteName: 'Gastos' })
+}, {
+        initialRouteName: 'Gastos',
+        headerMode: 'none'
+
+    })
 
 
 const menuRoutes = {

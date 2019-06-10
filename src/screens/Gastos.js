@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    View, Text, FlatList, StyleSheet, TouchableOpacity,
+    View, Text, ImageBackground, FlatList, StyleSheet, TouchableOpacity,
     Alert, ToastAndroid, TouchableHighlight, ActivityIndicator
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -71,44 +71,51 @@ export default class Gasto extends Component {
         const { navigate } = this.props.navigation;
         console.info("gastos=>", this.state.gastos)
         return (
-            <View style={styles.container}>
-                <View style={styles.topo}>
-                    <Text style={styles.titulo}>Registro de Gastos</Text>
-                    <TouchableOpacity onPress={() => navigate('AddGasto')}>
-                        <Icon name='plus-square' size={30} color='blue' />
-                    </TouchableOpacity>
-                </View>
-                {loading ? (<ActivityIndicator size={100} color="#0000ff" />) : (
-                    <FlatList data={this.state.gastos}
-                        keyExtractor={item => item.id}
-                        renderItem={({ item }) => {
-                            return (
-                                <TouchableHighlight onLongPress={() => this.handleDelete(item.id)}
-                                    onPress={() => navigate('EditGasto', {
-                                        itemID: item.id,
-                                        itemLocal: item.local,
-                                        itemValor: item.valor
-                                    })}
-                                >
-                                    <View style={styles.resgistro} >
-                                        <View>
-                                            <Text style={styles.local}>{item.local}</Text>
-                                            <Text style={styles.info}>Parcela: </Text>
-                                            <Text style={styles.info}>Data de lançamento: <Text style={styles.data}>{item.data} </Text> </Text>
+            <ImageBackground style={styles.backgroundImage}
+                source={require('../assets/img/backGround.jpg')}>
+                <View style={styles.container}>
+                    <View style={styles.topo}>
+                        <Text style={styles.titulo}>Registro de Gastos</Text>
+                        <TouchableOpacity onPress={() => navigate('AddGasto')}>
+                            <Icon name='plus-square' size={30} color='blue' />
+                        </TouchableOpacity>
+                    </View>
+                    {loading ? (<ActivityIndicator size={100} color="#0000ff" />) : (
+                        <FlatList data={this.state.gastos}
+                            keyExtractor={item => item.id}
+                            renderItem={({ item }) => {
+                                return (
+                                    <TouchableHighlight onLongPress={() => this.handleDelete(item.id)}
+                                        onPress={() => navigate('EditGasto', {
+                                            itemID: item.id,
+                                            itemLocal: item.local,
+                                            itemValor: item.valor
+                                        })}
+                                    >
+                                        <View style={styles.resgistro} >
+                                            <View>
+                                                <Text style={styles.local}>{item.local}</Text>
+                                                <Text style={styles.info}>Parcela: </Text>
+                                                <Text style={styles.info}>Data de lançamento: <Text style={styles.data}>{item.data} </Text> </Text>
+                                            </View>
+                                            <Text style={styles.valor}>R$ {item.valor}</Text>
                                         </View>
-                                        <Text style={styles.valor}>R$ {item.valor}</Text>
-                                    </View>
-                                </TouchableHighlight>
-                            )
-                        }}
-                    />
-                )}
-            </View>
+                                    </TouchableHighlight>
+                                )
+                            }}
+                        />
+                    )}
+                </View>
+            </ImageBackground>
         );
     }
 }
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        width: '100%',
+        height: '100%'
+    },
     container: {
         flex: 1,
     },

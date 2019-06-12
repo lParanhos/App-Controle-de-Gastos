@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {
-    View, TextInput, TouchableOpacity,
-    StyleSheet, Dimensions, Text, Alert, ActivityIndicator, ToastAndroid
+    View, TouchableOpacity,
+    StyleSheet, Alert, ActivityIndicator, ToastAndroid, Picker
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { Input, Text, CheckBox } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Entypo';
 
 
 export default class FormGastos extends Component {
@@ -13,6 +14,9 @@ export default class FormGastos extends Component {
         local: this.props.local ? this.props.local : '',
         valor: this.props.valor ? this.props.valor : '',
         edit: this.props.edit,
+        checked: false,
+        qtd: '',
+        mesPrimeiraParcela: ''
     }
 
 
@@ -83,11 +87,54 @@ export default class FormGastos extends Component {
 
     }
 
+    renderOpcoesParcela = () => {
+        if (this.state.checked) {
+            return (
+                <View>
+                    <Input placeholder="Quantidade de parcelas ..."
+                        keyboardType='decimal-pad'
+                        value={this.state.qtd}
+                        inputContainerStyle={styles.TextInputStyleClass}
+                        rightIcon={<Icon name='credit-card' size={30} color='blue' />}
+                        onChangeText={qtd => this.setState({ qtd })} />
+                    <Input placeholder="Qual o mês da primeira parcela ?"
+                        value={this.state.mesPrimeiraParcela}
+                        inputContainerStyle={styles.TextInputStyleClass}
+                        rightIcon={<Icon name='calendar' size={30} color='blue' />}
+                        onChangeText={mes => this.setState({ mesPrimeiraParcela: mes })} />
+                </View>
+            );
+        }
+    }
     render() {
-        console.log("aqui => ",this.state)
+        console.log("aqui => ", this.state)
         return (
             <View style={styles.container}>
-                <TextInput style={styles.TextInputStyleClass} autoFocus={true}
+                <Input placeholder="Local onde foi gasto ..."
+                    value={this.state.local}
+                    inputContainerStyle={styles.TextInputStyleClass}
+                    rightIcon={<Icon name='location' size={30} color='blue' />}
+                    onChangeText={local => this.setState({ local })} />
+                <Input placeholder="Quanto você gastou..."
+                    value={this.state.valor}
+                    keyboardType='numeric'
+                    inputContainerStyle={styles.TextInputStyleClass}
+                    rightIcon={<Icon name='wallet' size={30} color='blue' />}
+                    onChangeText={valor => this.setState({ valor })} />
+                <CheckBox title='Parcelado ?'
+                    containerStyle={{ width: '100%' }}
+                    center
+                    checked={this.state.checked}
+                    onPress={() => this.setState({ checked: !this.state.checked })} />
+                {this.renderOpcoesParcela()}
+                {this.state.loading ? null :
+                    <TouchableOpacity style={styles.button}
+                        onPress={() => this.handleSubmit(this.props.id ? this.props.id : '')}>
+                        <Text style={styles.textButton}>Salvar</Text>
+                    </TouchableOpacity>
+                }
+
+                {/*   <TextInput style={styles.TextInputStyleClass} autoFocus={true}
                     placeholder='Local....' value={this.state.local}
                     onChangeText={local => this.setState({ local })} />
                 <TextInput style={styles.TextInputStyleClass} value={this.state.valor}
@@ -98,7 +145,7 @@ export default class FormGastos extends Component {
                         onPress={() => this.handleSubmit(this.props.id ? this.props.id : '')}>
                         <Text style={styles.textButton}>Salvar</Text>
                     </TouchableOpacity>
-                }
+                } */}
             </View>
         );
     }
@@ -112,23 +159,7 @@ const styles = StyleSheet.create({
     },
     TextInputStyleClass: {
         marginBottom: 10,
-        // Setting up Hint Align center.
-        textAlign: 'center',
-
-        // Setting up TextInput height as 50 pixel.
         width: '100%',
-
-        // Set border width.
-        borderWidth: 2,
-
-        // Set border Hex Color Code Here.
-        borderColor: '#acadaf',
-
-        // Set border Radius.
-        borderRadius: 20,
-
-        //Set background color of Text Input.
-        backgroundColor: "#FFFFFF"
 
     }, button: {
         alignItems: 'center',
@@ -145,5 +176,8 @@ const styles = StyleSheet.create({
     },
     success: {
         alignItems: 'center'
+    },
+    select: {
+        flexDirection: 'row'
     }
 })

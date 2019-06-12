@@ -6,12 +6,11 @@ import { Card, Badge } from 'react-native-elements';
 
 const CadrInfo = (props) => {
 
-    const { total, receber } = props;
+    const { total, receber, callback, mes } = props;
     let totalSemVirgula = total.replace(",", '');
     let receberSemVirgula = receber.replace(",", '');
     let sobrou = receberSemVirgula - totalSemVirgula;
     let sobrouConvert = sobrou.toLocaleString('pt-br', { minimumFractionDigits: 2 });
-
     const meses = [{ mes: "Janeiro", valor: "01" },
     { mes: "Fevereiro", valor: "02" }, { mes: "Março", valor: "03" },
     { mes: "Abril", valor: "04" }, { mes: "Maio", valor: "05" },
@@ -22,7 +21,7 @@ const CadrInfo = (props) => {
     ]
     return (
         <Card containerStyle={{ borderRadius: 10 }}>
-            <Picker>
+            <Picker onValueChange={(item) => callback(item)} selectedValue={mes}>
                 {meses.map((mes, i) =>
                     <Picker.Item key={mes.valor} label={mes.mes} value={mes.valor} />
                 )}

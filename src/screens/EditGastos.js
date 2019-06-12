@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
         flex: 1,
     }, title: {
         textAlign: 'center',
-        fontSize: 20,
-        padding: 10
+        fontSize: 30,
+        marginTop: 25
     },
     form: {
         justifyContent: 'space-between'

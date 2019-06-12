@@ -9,6 +9,7 @@ class App extends Component {
   state = {
     loading: true,
     values: {},
+    mes: ''
   }
 
   componentDidMount() {
@@ -23,6 +24,11 @@ class App extends Component {
   componentWillUnmount() {
     // Remove the event listener
     this.focusListener.remove();
+  }
+
+  changeMount(mes) {
+    console.log(mes)
+    this.setState({ mes })
   }
 
   refresh = () => {
@@ -51,8 +57,11 @@ class App extends Component {
           {loading ?
             (<ActivityIndicator size={100} color="#0000ff" />) :
             (<>
-              <CardInfo total={values.totalGasto} receber={values.aReceber} />
-              <ScrollView style={{marginTop: 10}}>
+              <CardInfo callback={this.changeMount.bind(this)} mes={this.state.mes}
+                total={values.totalGasto} receber={values.aReceber} />
+              <ScrollView style={{ marginTop: 10 }}
+                showsVerticalScrollIndicator={false}
+              >
                 <ListaPoupanca />
                 <Vencimentos />
               </ScrollView>

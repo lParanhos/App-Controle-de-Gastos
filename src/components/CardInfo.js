@@ -1,27 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { View, Text, StyleSheet, Picker } from 'react-native';
 
 import { Card, Badge } from 'react-native-elements';
 
 const CadrInfo = (props) => {
-
-    const { total, receber, callback, mes } = props;
+    const { total, receber, callback, mounth } = props;
     let totalSemVirgula = total.replace(",", '');
     let receberSemVirgula = receber.replace(",", '');
     let sobrou = receberSemVirgula - totalSemVirgula;
     let sobrouConvert = sobrou.toLocaleString('pt-br', { minimumFractionDigits: 2 });
-    const meses = [{ mes: "Janeiro", valor: "01" },
-    { mes: "Fevereiro", valor: "02" }, { mes: "Março", valor: "03" },
-    { mes: "Abril", valor: "04" }, { mes: "Maio", valor: "05" },
-    { mes: "Junho", valor: "06" }, { mes: "Julho", valor: "07" },
-    { mes: "Agosto", valor: "08" }, { mes: "Setembro", valor: "09" },
+    const meses = [{ mes: "Janeiro", valor: "1" },
+    { mes: "Fevereiro", valor: "2" }, { mes: "Março", valor: "3" },
+    { mes: "Abril", valor: "4" }, { mes: "Maio", valor: "5" },
+    { mes: "Junho", valor: "6" }, { mes: "Julho", valor: "7" },
+    { mes: "Agosto", valor: "8" }, { mes: "Setembro", valor: "9" },
     { mes: "Outubro", valor: "10" }, { mes: "Novembro", valor: "11" },
     { mes: "Dezembro", valor: "12" },
     ]
+    useEffect(() => {
+
+    }, [])
+    let selectMount = meses.filter(mes => { return mes.valor == mounth });
     return (
         <Card containerStyle={{ borderRadius: 10 }}>
-            <Picker onValueChange={(item) => callback(item)} selectedValue={mes}>
+            <Picker onValueChange={(item) => callback(item)} selectedValue={selectMount[0].valor}>
                 {meses.map((mes, i) =>
                     <Picker.Item key={mes.valor} label={mes.mes} value={mes.valor} />
                 )}
@@ -39,7 +42,7 @@ const CadrInfo = (props) => {
                         </View>
                         <Text style={styles.receber}>
                             <Text style={{ fontSize: 15 }}>R$ </Text>
-                            {receberSemVirgula}
+                            {receber}
                         </Text>
                     </View>
                     <View>
@@ -49,7 +52,7 @@ const CadrInfo = (props) => {
                         </View>
                         <Text style={styles.receber}>
                             <Text style={{ fontSize: 15 }}>R$ </Text>
-                            {totalSemVirgula}
+                            {total}
                         </Text>
                     </View>
                 </View>

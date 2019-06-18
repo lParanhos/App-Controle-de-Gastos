@@ -9,11 +9,16 @@ class App extends Component {
   state = {
     loading: true,
     values: {},
-    mes: ''
+    mes: '',
+    ano: '',
+    loadingCard: false,
   }
 
   componentDidMount() {
     const { navigation } = this.props;
+    let currentMounth = new Date().getMonth() + 1;
+    let currentYear = new Date().getFullYear();
+    this.setState({ mes: currentMounth, ano: currentYear });
     this.focusListener = navigation.addListener("didFocus", () => {
       // The screen is focused
       // Call any action
@@ -27,13 +32,26 @@ class App extends Component {
   }
 
   changeMount(mes) {
-    console.log(mes)
-    this.setState({ mes })
+    this.setState({ loadingCard: true, mes });
+    console.log(`https://projetogastos.herokuapp.com/dash/${mes}-${this.state.ano}`)
+    fetch(`https://projetogastos.herokuapp.com/dash/${mes}-${this.state.ano}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        this.setState({ values: data });
+        this.setState({ loadingCard: false, });
+      })
+      .catch(err => {
+        console.log(err)
+        ToastAndroid.show('Erro no servidor !',
+          ToastAndroid.LONG);
+      })
   }
 
   refresh = () => {
+    const { mes, ano } = this.state;
     this.setState({ loading: true })
-    fetch('https://projetogastos.herokuapp.com/dash')
+    fetch(`https://projetogastos.herokuapp.com/dash/${mes}-${ano}`)
       .then(res => res.json())
       .then(data => {
         console.log(data)
@@ -47,8 +65,7 @@ class App extends Component {
   }
 
   render() {
-    const { loading, values } = this.state;
-    console.log("=>", values)
+    const { loading, values, mes, loadingCard } = this.state;
     return (
       <ImageBackground style={styles.imageBackground}
         source={require('../assets/img/backGround.jpg')}>
@@ -57,8 +74,9 @@ class App extends Component {
           {loading ?
             (<ActivityIndicator size={100} color="#0000ff" />) :
             (<>
-              <CardInfo callback={this.changeMount.bind(this)} mes={this.state.mes}
-                total={values.totalGasto} receber={values.aReceber} />
+              {loadingCard ? <ActivityIndicator size={100} color="#0000ff" /> :
+                <CardInfo callback={this.changeMount.bind(this)} mounth={mes ? mes : null}
+                  total={values.totalGasto} receber={values.aReceber} />}
               <ScrollView style={{ marginTop: 10 }}
                 showsVerticalScrollIndicator={false}
               >

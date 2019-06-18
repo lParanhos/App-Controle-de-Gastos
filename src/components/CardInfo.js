@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { View, Text, StyleSheet, Picker } from 'react-native';
 
@@ -18,9 +18,6 @@ const CadrInfo = (props) => {
     { mes: "Outubro", valor: "10" }, { mes: "Novembro", valor: "11" },
     { mes: "Dezembro", valor: "12" },
     ]
-    useEffect(() => {
-
-    }, [])
     let selectMount = meses.filter(mes => { return mes.valor == mounth });
     return (
         <Card containerStyle={{ borderRadius: 10 }}>

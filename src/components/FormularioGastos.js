@@ -34,11 +34,14 @@ export default class FormGastos extends Component {
         }
 
         let ano = data.getFullYear();
-        let dataFormatada = dia + "/" + mes + "/" + ano;
+        let formatValor = this.state.valor.replace(',', '.');
         let submit = {
-            Local: this.state.local,
-            Valor: this.state.valor,
-            Data: dataFormatada
+            local: this.state.local,
+            valor: formatValor,
+            ano: ano,
+            mes: mes,
+            dia: dia,
+
         }
         let text = id ? 'editar' : 'adicionar';
         Alert.alert(
@@ -121,12 +124,13 @@ export default class FormGastos extends Component {
                     inputContainerStyle={styles.TextInputStyleClass}
                     rightIcon={<Icon name='wallet' size={30} color='blue' />}
                     onChangeText={valor => this.setState({ valor })} />
-                <CheckBox title='Parcelado ?'
+                {/* CheckBox Parcelado
+                 <CheckBox title='Parcelado ?'
                     containerStyle={{ width: '100%' }}
                     center
                     checked={this.state.checked}
                     onPress={() => this.setState({ checked: !this.state.checked })} />
-                {this.renderOpcoesParcela()}
+                {this.renderOpcoesParcela()} */}
                 {this.state.loading ? null :
                     <TouchableOpacity style={styles.button}
                         onPress={() => this.handleSubmit(this.props.id ? this.props.id : '')}>
@@ -134,7 +138,8 @@ export default class FormGastos extends Component {
                     </TouchableOpacity>
                 }
 
-                {/*   <TextInput style={styles.TextInputStyleClass} autoFocus={true}
+                {/*   
+                <TextInput style={styles.TextInputStyleClass} autoFocus={true}
                     placeholder='Local....' value={this.state.local}
                     onChangeText={local => this.setState({ local })} />
                 <TextInput style={styles.TextInputStyleClass} value={this.state.valor}

@@ -33,11 +33,14 @@ export default class AddRecebimento extends Component {
             mes = "0" + mes;
         }
         let ano = data.getFullYear();
-        let dataFormatada = dia + "/" + mes + "/" + ano;
+       // let dataFormatada = dia + "/" + mes + "/" + ano;
+        let formatValue = this.state.valor.replace(',', '.');
         let submit = {
-            De: this.state.receberDe,
-            Valor: this.state.valor,
-            dataLancamento: dataFormatada,
+            de: this.state.receberDe,
+            valor: formatValue,
+            dia: dia,
+            mes: mes,
+            ano: ano,
             recebido: false
         }
 

@@ -33,7 +33,6 @@ class App extends Component {
 
   changeMount(mes) {
     this.setState({ loadingCard: true, mes });
-    console.log(`https://projetogastos.herokuapp.com/dash/${mes}-${this.state.ano}`)
     fetch(`https://projetogastos.herokuapp.com/dash/${mes}-${this.state.ano}`)
       .then(res => res.json())
       .then(data => {

@@ -39,8 +39,8 @@ export default class FormGastos extends Component {
             local: this.state.local,
             valor: formatValor,
             ano: ano,
-            mes: mes,
-            dia: dia,
+            mes: parseInt(mes),
+            dia: parseInt(dia),
 
         }
         let text = id ? 'editar' : 'adicionar';

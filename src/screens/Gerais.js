@@ -86,7 +86,7 @@ class Gerais extends Component {
                                         onPress={() => { }}
                                     >
                                         <ItemRecebido callBack={() => this.refresh()}
-                                            data={item.dataLancamento} id={item.id}
+                                            dia={item.dia} mes={item.mes} ano={item.ano} id={item.id}
                                             de={item.de} valor={item.valor} status={item.recebido}
                                         />
                                     </TouchableHighlight>

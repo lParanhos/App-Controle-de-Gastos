@@ -72,7 +72,7 @@ const menuRoutes = {
 }
 
 const menuConfig = {
-    initialRouteName: 'Gastos',
+    initialRouteName: 'Home',
     tabBarOptions: {
         showLabel: true
     }

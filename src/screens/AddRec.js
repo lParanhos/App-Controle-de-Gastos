@@ -38,9 +38,9 @@ export default class AddRecebimento extends Component {
         let submit = {
             de: this.state.receberDe,
             valor: formatValue,
-            dia: dia,
-            mes: mes,
             ano: ano,
+            mes: parseInt(mes),
+            dia: parseInt(dia),
             recebido: false
         }
 

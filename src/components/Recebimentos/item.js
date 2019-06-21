@@ -6,11 +6,14 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ItemRecebido = (props) => {
 
-    function handlePago(id, de, valor, data, status, callBack) {
+    function handlePago(id, de, valor, ano, mes, dia ,status, callBack) {
+        
         let submit = {
             De: de,
             Valor: valor,
-            dataLancamento: data,
+            ano: ano,
+            mes: parseInt(mes),
+            dia: parseInt(dia),
             recebido: !status
         }
         console.log(submit)
@@ -51,7 +54,7 @@ const ItemRecebido = (props) => {
             { cancelable: false },
         );
     }
-    const { data, valor, de, status, id, callBack } = props;
+    const { data, valor, de, status, id, callBack, ano, mes, dia } = props;
     return (
         <View style={styles.resgistro} >
             <View>
@@ -61,7 +64,7 @@ const ItemRecebido = (props) => {
             <View style={{ alignItems: 'center' }}>
                 <Text>Recebido</Text>
                 <Icon
-                    onPress={() => handlePago(id, de, valor, data, status, callBack)}
+                    onPress={() => handlePago(id, de, valor, ano, mes, dia, status, callBack)}
                     name={status ? 'check-circle' : 'times-circle'}
                     size={30} color={status ? 'green' : 'red'} />
             </View>

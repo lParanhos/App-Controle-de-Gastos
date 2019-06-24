@@ -75,7 +75,8 @@ class App extends Component {
             (<>
               {loadingCard ? <ActivityIndicator size={100} color="#0000ff" /> :
                 <CardInfo callback={this.changeMount.bind(this)} mounth={mes ? mes : null}
-                  total={values.totalGasto} receber={values.aReceber} />}
+                  total={values.totalGasto} receber={values.aReceber}
+                  sobrou={values.restou} />}
               <ScrollView style={{ marginTop: 10 }}
                 showsVerticalScrollIndicator={false}
               >

@@ -33,7 +33,7 @@ export default class AddRecebimento extends Component {
             mes = "0" + mes;
         }
         let ano = data.getFullYear();
-       // let dataFormatada = dia + "/" + mes + "/" + ano;
+        // let dataFormatada = dia + "/" + mes + "/" + ano;
         let formatValue = this.state.valor.replace(',', '.');
         let submit = {
             de: this.state.receberDe,
@@ -65,9 +65,10 @@ export default class AddRecebimento extends Component {
 
                         })
                             .then(res => {
-                                this.setState({ loading: false, receberDe: '', valor: '' })
+                                this.setState({ receberDe: '', valor: '' })
                                 ToastAndroid.show(`Adicionado com sucesso !`,
                                     ToastAndroid.LONG);
+                                this.setState({ loading: false })
                             })
                             .catch(err => {
                                 console.log(err)

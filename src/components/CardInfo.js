@@ -5,11 +5,13 @@ import { View, Text, StyleSheet, Picker } from 'react-native';
 import { Card, Badge } from 'react-native-elements';
 
 const CadrInfo = (props) => {
-    const { total, receber, callback, mounth } = props;
-    let totalSemVirgula = total.replace(",", '');
+    const { total, receber, sobrou, callback, mounth } = props;
+    /* let totalSemVirgula = total.replace(",", '');
     let receberSemVirgula = receber.replace(",", '');
     let sobrou = receberSemVirgula - totalSemVirgula;
-    let sobrouConvert = sobrou.toLocaleString('pt-br', { minimumFractionDigits: 2 });
+    let sobrouConvert = Math.round(sobrou * 100) / 100; */
+    //console.log(teste)
+  //  let sobrouConvert = sobrou.toLocaleString('pt-br', { minimumFractionDigits: 2 });
     const meses = [{ mes: "Janeiro", valor: "1" },
     { mes: "Fevereiro", valor: "2" }, { mes: "Março", valor: "3" },
     { mes: "Abril", valor: "4" }, { mes: "Maio", valor: "5" },
@@ -29,7 +31,7 @@ const CadrInfo = (props) => {
             <View style={styles.dados}>
                 <Text style={styles.valor}>
                     <Text style={styles.moeda}>R$ </Text>
-                    {sobrouConvert}
+                    {sobrou}
                 </Text>
                 <View style={styles.registros}>
                     <View>

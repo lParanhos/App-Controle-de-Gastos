@@ -8,7 +8,7 @@ const Formulario = (props) => (
     <View>
         <Input placeholder="Receber de....."
             rightIcon={<Icon name='user' size={30} color='blue' />}
-            value={props.receberDe}
+            value={props.receber}
             onChangeText={de => props.callBackReceber(de)}
         />
         <Input placeholder="Valor ... " keyboardType='numeric'

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { ImageBackground, StyleSheet, View, ActivityIndicator, Text, ScrollView } from 'react-native';
 import { withNavigationFocus } from 'react-navigation';
+import LinearGradient from 'react-native-linear-gradient';
+import Header from '../components/Header';
 import CardInfo from '../components/CardInfo';
 import ListaPoupanca from '../components/ListaPoupanca';
 import Vencimentos from '../components/Vencimentos';
@@ -32,11 +34,12 @@ class App extends Component {
   }
 
   changeMount(mes) {
+    console.log(mes)
     this.setState({ loadingCard: true, mes });
     fetch(`https://projetogastos.herokuapp.com/dash/${mes}-${this.state.ano}`)
       .then(res => res.json())
       .then(data => {
-        console.log(data)
+        console.log("aqui =>", data)
         this.setState({ values: data });
         this.setState({ loadingCard: false, });
       })
@@ -49,11 +52,12 @@ class App extends Component {
 
   refresh = () => {
     const { mes, ano } = this.state;
+    console.log(mes, ano)
     this.setState({ loading: true })
     fetch(`https://projetogastos.herokuapp.com/dash/${mes}-${ano}`)
       .then(res => res.json())
       .then(data => {
-        console.log(data)
+        console.log("aqui =>", data)
         this.setState({ loading: false, values: data })
       })
       .catch(err => {
@@ -66,10 +70,12 @@ class App extends Component {
   render() {
     const { loading, values, mes, loadingCard } = this.state;
     return (
-      <ImageBackground style={styles.imageBackground}
-        source={require('../assets/img/backGround.jpg')}>
-        <View style={styles.container}>
-          <Text style={styles.titulo}>Resumo</Text>
+      <View style={styles.container}>
+        <LinearGradient
+          locations={[0, 0.5, 0.6]}
+          colors={['#051937', '#008793', '#004d7a']}
+          style={{ flex: 1 }}                    >
+           <Text style={styles.titulo}>Resumo</Text>
           {loading ?
             (<ActivityIndicator size={100} color="#0000ff" />) :
             (<>
@@ -85,8 +91,8 @@ class App extends Component {
               </ScrollView>
             </>
             )}
-        </View>
-      </ImageBackground>
+        </LinearGradient>
+      </View>
     );
   }
 }
@@ -103,7 +109,8 @@ const styles = StyleSheet.create({
   titulo: {
     marginTop: 40,
     marginLeft: 30,
-    fontSize: 30
+    fontSize: 30,
+    color: '#fff'
   }
 });
 

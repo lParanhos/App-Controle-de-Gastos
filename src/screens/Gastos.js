@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import {
     View, Text, ImageBackground, FlatList, StyleSheet, TouchableOpacity,
-    Alert, ToastAndroid, TouchableHighlight, ActivityIndicator
+    Alert, ToastAndroid, TouchableHighlight, ActivityIndicator,
 } from 'react-native';
+import ActionButton from 'react-native-action-button';
+import Header from '../components/Header';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import LinearGradient from 'react-native-linear-gradient';
 
 export default class Gasto extends Component {
 
@@ -13,19 +15,23 @@ export default class Gasto extends Component {
         this.state = {
             loading: true,
             gastos: [],
+            mes: new Date().getMonth() + 1,
+            ano: new Date().getFullYear()
 
         }
     }
     componentDidMount() {
-        const { navigation } = this.props
+        const { navigation } = this.props;
+        const { mes, ano } = this.state;
         this.focusListener = navigation.addListener("didFocus", () => {
-            this.refresh();
+            this.refresh(mes, ano);
         })
     }
 
-    refresh = () => {
+    refresh = (mes, ano) => {
         this.setState({ loading: true })
-        fetch('https://projetogastos.herokuapp.com/gastos')
+        console.log(mes, ano)
+        fetch(`https://projetogastos.herokuapp.com/gastos/0${mes}-${ano}`)
             .then(res => res.json())
             .then(gastos => { this.setState({ loading: false, gastos }) })
     }
@@ -71,15 +77,12 @@ export default class Gasto extends Component {
         const { navigate } = this.props.navigation;
         console.info("gastos=>", this.state.gastos)
         return (
-            <ImageBackground style={styles.backgroundImage}
-                source={require('../assets/img/backGround.jpg')}>
-                <View style={styles.container}>
-                    <View style={styles.topo}>
-                        <Text style={styles.titulo}>Registro de Gastos</Text>
-                        <TouchableOpacity onPress={() => navigate('AddGasto')}>
-                            <Icon name='plus-square' size={30} color='blue' />
-                        </TouchableOpacity>
-                    </View>
+            <View style={styles.container}>
+                <Header tittle="Registros de Gastos" />
+                <LinearGradient
+                    locations={[0, 0.5, 0.6]}
+                    colors={['#051937', '#008793', '#004d7a']}
+                    style={{ flex: 1 }}                    >
                     {loading ? (<ActivityIndicator size={100} color="#0000ff" />) : (
                         <FlatList data={this.state.gastos}
                             keyExtractor={item => item.id}
@@ -96,7 +99,7 @@ export default class Gasto extends Component {
                                             <View>
                                                 <Text style={styles.local}>{item.local}</Text>
                                                 <Text style={styles.info}>Parcela: </Text>
-                                                <Text style={styles.info}>Data de lançamento: <Text style={styles.data}>{item.data} </Text> </Text>
+                                                <Text style={styles.info}>Data de lançamento: <Text style={styles.data}>{item.lancamento} </Text> </Text>
                                             </View>
                                             <Text style={styles.valor}>R$ {item.valor}</Text>
                                         </View>
@@ -105,8 +108,13 @@ export default class Gasto extends Component {
                             }}
                         />
                     )}
-                </View>
-            </ImageBackground>
+
+                </LinearGradient>
+                <ActionButton buttonColor="#48A2F8"
+                    renderIcon={() => 
+                        <Icon style={{justifyContent: "center"}} name="plus" size={25} color="#fff"/> }
+                    onPress={() => navigate('AddGasto')} />
+            </View>
         );
     }
 }
@@ -114,7 +122,8 @@ export default class Gasto extends Component {
 const styles = StyleSheet.create({
     backgroundImage: {
         width: '100%',
-        height: '100%'
+        height: '100%',
+        opacity: 10
     },
     container: {
         flex: 1,
@@ -159,6 +168,10 @@ const styles = StyleSheet.create({
     },
     data: {
         fontWeight: 'bold'
-    }
-
+    },
+    actionButtonIcon: {
+        fontSize: 20,
+        height: 22,
+        color: 'white',
+    },
 })

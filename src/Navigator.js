@@ -41,16 +41,6 @@ const GastosRoutes = createStackNavigator({
 
 const menuRoutes = {
 
-    Home: {
-        name: 'Home',
-        screen: Home,
-        navigationOptions: {
-            title: 'Home',
-            tabBarIcon: ({ tintColor }) =>
-                <Icon name='home' size={30} color={tintColor} />
-        }
-    },
-
     Gastos: {
         name: 'Gastos',
         screen: GastosRoutes,
@@ -60,6 +50,17 @@ const menuRoutes = {
                 <Icon name='list-alt' size={30} color={tintColor} />
         }
     },
+    Home: {
+        name: 'Home',
+        screen: Home,
+        navigationOptions: {
+            title: 'Home',
+            tabBarIcon: ({ tintColor }) =>
+                <Icon name='home' size={35} color={tintColor} />
+        }
+    },
+
+
     Receber: {
         name: 'Receber',
         screen: RecebimentosRoutes,
@@ -72,9 +73,14 @@ const menuRoutes = {
 }
 
 const menuConfig = {
-    initialRouteName: 'Home',
+    initialRouteName: 'Gastos',
     tabBarOptions: {
-        showLabel: true
+        showLabel: false, // hide labels
+        activeTintColor: '#F8F8F8', // active icon color
+        inactiveTintColor: '#586589',  // inactive icon color
+        style: {
+            backgroundColor: '#171F33' // TabBar background
+        }
     }
 }
 

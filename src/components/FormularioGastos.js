@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import {
     View, TouchableOpacity,
-    StyleSheet, Alert, ActivityIndicator, ToastAndroid, Picker
+    StyleSheet, Alert, ActivityIndicator, ToastAndroid, DatePickerAndroid
 } from 'react-native';
 import { Input, Text, CheckBox } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
+import DatePicker from './datePicker';
 
+import { formatDate } from '../assets/dateFunctions';
 
 export default class FormGastos extends Component {
 
@@ -15,32 +17,56 @@ export default class FormGastos extends Component {
         valor: this.props.valor ? this.props.valor : '',
         edit: this.props.edit,
         checked: false,
-        qtd: '',
+        qtd: this.props.valor ? this.props.valor : '',
         mesPrimeiraParcela: ''
     }
 
 
-    handleSubmit = (id) => {
-        this.setState({ loading: true })
-        let data = new Date();
+    handleSubmit = async (id) => {
+
+
+        /* 	"local": "teste parcelas",
+            "valor": "123,1231",
+            "ano": 2019,
+            "mes":  6,
+            "dia" : 21,
+            "parcelado": true,
+            "qtdParcelas": 10,
+            "dataLancamento" : "21/6/2019"  */
+
+
+
+
+        const { local, valor, qtd, mesPrimeiraParcela, checked } = this.state;
+        if ((!local || !valor) || (checked && (!qtd || !mesPrimeiraParcela)))
+            return alert('Preencha todas as informações necessárias');
+
+        this.setState({ loading: true });
+        let currentDate = await formatDate(new Date());
+        let selectDate = await formatDate(mesPrimeiraParcela);
+        /* let data = new Date();
         let dia = data.getDate();
         if (dia < 10) {
             dia = "0" + dia;
         }
-
         let mes = data.getMonth() + 1;
         if (mes < 10) {
             mes = "0" + mes;
         }
+        let ano = data.getFullYear(); */
 
-        let ano = data.getFullYear();
+
         let formatValor = this.state.valor.replace(',', '.');
+
         let submit = {
             local: this.state.local,
             valor: formatValor,
-            ano: ano,
-            mes: parseInt(mes),
-            dia: parseInt(dia),
+            ano: selectDate ? selectDate.ano : '',
+            mes: selectDate ? parseInt(selectDate.mes) : '',
+            dia: selectDate ? parseInt(selectDate.dia) : '',
+            parcelado: checked,
+            qtdParcelas: qtd,
+            dataLancamento: `${currentDate.dia}/${currentDate.mes}/${currentDate.ano}`
 
         }
         let text = id ? 'editar' : 'adicionar';
@@ -50,7 +76,7 @@ export default class FormGastos extends Component {
             [
                 {
                     text: 'Cancelar',
-                    onPress: () => console.log('Cancel Pressed'),
+                    onPress: () => this.setState({ loading: false }),
                     style: 'cancel',
                 },
                 {
@@ -73,7 +99,7 @@ export default class FormGastos extends Component {
                             .then(res => {
                                 let msg = id ? 'Editado' : 'Adicionado';
                                 this.setState({ loading: false })
-                                msg === 'Editado' ? null : this.setState({ local: '', valor: '' })
+                                msg === 'Editado' ? null : this.setState({ local: '', valor: '', qtd: '', mesPrimeiraParcela: '' })
                                 ToastAndroid.show(`${msg} com sucesso !`,
                                     ToastAndroid.LONG);
                             })
@@ -90,6 +116,8 @@ export default class FormGastos extends Component {
 
     }
 
+    handleDate = (date) => this.setState({ mesPrimeiraParcela: date })
+
     renderOpcoesParcela = () => {
         if (this.state.checked) {
             return (
@@ -100,17 +128,17 @@ export default class FormGastos extends Component {
                         inputContainerStyle={styles.TextInputStyleClass}
                         rightIcon={<Icon name='credit-card' size={30} color='blue' />}
                         onChangeText={qtd => this.setState({ qtd })} />
-                    <Input placeholder="Qual o mês da primeira parcela ?"
+                    {/* <Input placeholder="Qual o mês da primeira parcela ?"
                         value={this.state.mesPrimeiraParcela}
                         inputContainerStyle={styles.TextInputStyleClass}
                         rightIcon={<Icon name='calendar' size={30} color='blue' />}
-                        onChangeText={mes => this.setState({ mesPrimeiraParcela: mes })} />
+                        onChangeText={mes => this.setState({ mesPrimeiraParcela: mes })} /> */}
                 </View>
             );
         }
     }
     render() {
-        console.log("aqui => ", this.state)
+        /* console.log("aqui => ", this.state) */
         return (
             <View style={styles.container}>
                 <Input placeholder="Local onde foi gasto ..."
@@ -124,13 +152,15 @@ export default class FormGastos extends Component {
                     inputContainerStyle={styles.TextInputStyleClass}
                     rightIcon={<Icon name='wallet' size={30} color='blue' />}
                     onChangeText={valor => this.setState({ valor })} />
-                {/* CheckBox Parcelado
-                 <CheckBox title='Parcelado ?'
+                <CheckBox title='Parcelado ?'
                     containerStyle={{ width: '100%' }}
                     center
                     checked={this.state.checked}
                     onPress={() => this.setState({ checked: !this.state.checked })} />
-                {this.renderOpcoesParcela()} */}
+                {this.renderOpcoesParcela()}
+                <DatePicker setDate={this.handleDate.bind(this)}
+                    date={this.state.mesPrimeiraParcela}
+                />
                 {this.state.loading ? null :
                     <TouchableOpacity style={styles.button}
                         onPress={() => this.handleSubmit(this.props.id ? this.props.id : '')}>
@@ -167,6 +197,7 @@ const styles = StyleSheet.create({
         width: '100%',
 
     }, button: {
+        marginTop: 10,
         alignItems: 'center',
         justifyContent: 'center',
         width: '50%',

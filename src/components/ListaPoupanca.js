@@ -58,7 +58,8 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         marginLeft: 20,
-        marginBottom: 5
+        marginBottom: 5,
+        color: '#fff'
     },
     containerAvatar: {
         width: 60,

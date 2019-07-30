@@ -4,6 +4,9 @@ import {
     Alert, ToastAndroid, TouchableHighlight, ActivityIndicator
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import LinearGradient from 'react-native-linear-gradient';
+import ActionButton from 'react-native-action-button';
+import Header from '../components/Header';
 import ItemRecebido from '../components/Recebimentos/item';
 
 class Gerais extends Component {
@@ -68,15 +71,12 @@ class Gerais extends Component {
         const { loading } = this.state;
         const { navigate } = this.props.navigation;
         return (
-            <ImageBackground style={styles.backgroundImage}
-                source={require('../assets/img/backGround.jpg')}>
-                <View style={styles.container}>
-                    <View style={styles.topo}>
-                        <Text style={styles.titulo}>A Receber</Text>
-                        <TouchableOpacity onPress={() => navigate('AddRec')}>
-                            <Icon name='plus-square' size={30} color='blue' />
-                        </TouchableOpacity>
-                    </View>
+            <View style={styles.container}>
+                <LinearGradient
+                    locations={[0, 0.5, 0.6]}
+                    colors={['#051937', '#008793', '#004d7a']}
+                    style={{ flex: 1 }}                    >
+                    <Header tittle="A Receber" />
                     {loading ? (<ActivityIndicator size={100} color="#0000ff" />) : (
                         <FlatList data={this.state.registros}
                             keyExtractor={item => item.id}
@@ -94,8 +94,12 @@ class Gerais extends Component {
                             }}
                         />
                     )}
-                </View>
-            </ImageBackground>
+                </LinearGradient>
+                <ActionButton buttonColor="#48A2F8"
+                    renderIcon={() =>
+                        <Icon style={{ justifyContent: "center" }} name="plus" size={25} color="#fff" />}
+                    onPress={() => navigate('AddRec')} />
+            </View>
         )
     }
 }

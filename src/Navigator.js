@@ -73,7 +73,7 @@ const menuRoutes = {
 }
 
 const menuConfig = {
-    initialRouteName: 'Gastos',
+    initialRouteName: 'Home',
     tabBarOptions: {
         showLabel: false, // hide labels
         activeTintColor: '#F8F8F8', // active icon color

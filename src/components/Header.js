@@ -1,21 +1,46 @@
 import React from 'react';
 import { Header, Divider } from 'react-native-elements';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, DatePickerAndroid } from 'react-native';
+import Icon from 'react-native-vector-icons/Entypo';
+import moment from 'moment';
+import 'moment/locale/pt-br';
+moment.locale('pt_BR')
 
-// import { Container } from './styles';
 
-const Cabecalho = (props) => (
-    <>
+const Cabecalho = (props) => {
 
-        <Header containerStyle={styles.head}
+    renderFilter = (setDate) => {
+        let data = new Date()
+        DatePickerAndroid.open({
+            date: data,
+            mode: 'spinner',
+        }).then(e => {
+            if (e.action !== DatePickerAndroid.dismissedAction) {
+                const momentDate = moment();
+                momentDate.date(e.day);
+                momentDate.month(e.month);
+                momentDate.year(e.year);
+                setDate(momentDate)
+            }
+        })
+    }
+
+    return (
+        <>
+
+            <Header containerStyle={styles.head}
 /*         leftComponent={{ icon: 'menu', color: '#fff' }}
- */        centerComponent={{ text: props.tittle, style: styles.tittle }}
-/*         rightComponent={{ icon: 'home', color: '#fff' }}
- */    />
-        <Divider style={{ backgroundColor: '#171F33' }} />
-    </>
-);
+    */        centerComponent={{ text: props.tittle, style: styles.tittle }}
+                rightComponent={props.filter ?
+                    <Icon style={{ marginBottom: 20 }} name="calendar"
+                        color="#fff" size={30} onPress={() => { renderFilter(props.callback) }} />
+                    : null}
+            />
+            <Divider style={{ backgroundColor: '#171F33' }} />
+        </>
+    );
 
+}
 export default Cabecalho;
 
 const styles = StyleSheet.create({
@@ -26,8 +51,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#243254'
     },
     tittle: {
-        color: '#fff', 
-        fontSize: 20, 
+        color: '#fff',
+        fontSize: 20,
         marginBottom: 15,
         fontWeight: 'bold'
     }

@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, Alert, ToastAndroid } from 'react-native';
 import { Button } from 'native-base';
 import Formulario from '../components/Recebimentos/formulario';
+import { formatDate } from '../assets/dateFunctions';
 
-// import { Container } from './styles';
 
 export default class AddRecebimento extends Component {
 
@@ -12,35 +12,25 @@ export default class AddRecebimento extends Component {
     state = {
         receberDe: '',
         valor: '',
+        date: '',
         loading: false
     }
-    addRecebimento(de) {
-        this.setState({ receberDe: de });
-    }
+    addRecebimento = (de) => this.setState({ receberDe: de });
 
-    addValor(v) {
-        this.setState({ valor: v });
-    }
+    addValor = (v) => this.setState({ valor: v });
 
-    handleSubmit = () => {
-        let data = new Date();
-        let dia = data.getDate();
-        if (dia < 10) {
-            dia = "0" + dia;
-        }
-        let mes = data.getMonth() + 1;
-        if (mes < 10) {
-            mes = "0" + mes;
-        }
-        let ano = data.getFullYear();
-        // let dataFormatada = dia + "/" + mes + "/" + ano;
+    handleDate = (date) => this.setState({ date });
+
+    handleSubmit = async () => {
+        let selectDate = await formatDate(this.state.date);
+        
         let formatValue = this.state.valor.replace(',', '.');
         let submit = {
             de: this.state.receberDe,
             valor: formatValue,
-            ano: ano,
-            mes: parseInt(mes),
-            dia: parseInt(dia),
+            ano: parseInt(selectDate.ano),
+            mes: parseInt(selectDate.mes),
+            dia: parseInt(selectDate.dia),
             recebido: false
         }
 
@@ -90,7 +80,8 @@ export default class AddRecebimento extends Component {
                 <Text style={styles.titulo}>Adicionar um Recebimento</Text>
                 <Formulario receber={receberDe} valor={valor}
                     callBackReceber={this.addRecebimento.bind(this)}
-                    callBackValor={this.addValor.bind(this)} />
+                    callBackValor={this.addValor.bind(this)} date={this.state.date}
+                    callBackDate={this.handleDate.bind(this)} />
                 {receberDe && valor && !loading ?
                     <Button style={styles.button} onPress={() => this.handleSubmit()}>
                         <Text style={styles.textButton}>Salvar</Text>

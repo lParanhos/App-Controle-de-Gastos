@@ -17,45 +17,19 @@ export default class FormGastos extends Component {
         valor: this.props.valor ? this.props.valor : '',
         edit: this.props.edit,
         checked: false,
-        qtd: this.props.valor ? this.props.valor : '',
-        mesPrimeiraParcela: ''
+        qtd: this.props.parcelas ? this.props.parcelas : '',
+        mesPrimeiraParcela: this.props.vencimento ? this.props.vencimento : '' 
     }
 
 
     handleSubmit = async (id) => {
-
-
-        /* 	"local": "teste parcelas",
-            "valor": "123,1231",
-            "ano": 2019,
-            "mes":  6,
-            "dia" : 21,
-            "parcelado": true,
-            "qtdParcelas": 10,
-            "dataLancamento" : "21/6/2019"  */
-
-
-
-
         const { local, valor, qtd, mesPrimeiraParcela, checked } = this.state;
-        if ((!local || !valor) || (checked && (!qtd || !mesPrimeiraParcela)))
+        console.log(!mesPrimeiraParcela)
+        if ((!local || !valor || !mesPrimeiraParcela) || (checked && !qtd))
             return alert('Preencha todas as informações necessárias');
-
         this.setState({ loading: true });
         let currentDate = await formatDate(new Date());
         let selectDate = await formatDate(mesPrimeiraParcela);
-        /* let data = new Date();
-        let dia = data.getDate();
-        if (dia < 10) {
-            dia = "0" + dia;
-        }
-        let mes = data.getMonth() + 1;
-        if (mes < 10) {
-            mes = "0" + mes;
-        }
-        let ano = data.getFullYear(); */
-
-
         let formatValor = this.state.valor.replace(',', '.');
 
         let submit = {
@@ -67,8 +41,8 @@ export default class FormGastos extends Component {
             parcelado: checked,
             qtdParcelas: qtd,
             dataLancamento: `${currentDate.dia}/${currentDate.mes}/${currentDate.ano}`
-
         }
+        console.log(submit)
         let text = id ? 'editar' : 'adicionar';
         Alert.alert(
             'Confirmar ',
@@ -83,9 +57,11 @@ export default class FormGastos extends Component {
                     text: 'OK', onPress: () => {
                         let url = '';
                         if (id)
-                            url = `https://projetogastos.herokuapp.com/gastos/${id}`
+                            url = `https://projetogastos.herokuapp.com/gasto/${id}`
                         else
                             url = `https://projetogastos.herokuapp.com/gastos`;
+
+                        console.log(url);
 
                         fetch(url, {
                             method: id ? 'PUT' : 'POST',
@@ -97,6 +73,7 @@ export default class FormGastos extends Component {
 
                         })
                             .then(res => {
+                                console.log(res)
                                 let msg = id ? 'Editado' : 'Adicionado';
                                 this.setState({ loading: false })
                                 msg === 'Editado' ? null : this.setState({ local: '', valor: '', qtd: '', mesPrimeiraParcela: '' })
@@ -167,20 +144,6 @@ export default class FormGastos extends Component {
                         <Text style={styles.textButton}>Salvar</Text>
                     </TouchableOpacity>
                 }
-
-                {/*   
-                <TextInput style={styles.TextInputStyleClass} autoFocus={true}
-                    placeholder='Local....' value={this.state.local}
-                    onChangeText={local => this.setState({ local })} />
-                <TextInput style={styles.TextInputStyleClass} value={this.state.valor}
-                    placeholder='Valor gasto..' keyboardType={'numeric'}
-                    onChangeText={valor => this.setState({ valor })} />
-                {this.state.loading ? null :
-                    <TouchableOpacity style={styles.button}
-                        onPress={() => this.handleSubmit(this.props.id ? this.props.id : '')}>
-                        <Text style={styles.textButton}>Salvar</Text>
-                    </TouchableOpacity>
-                } */}
             </View>
         );
     }

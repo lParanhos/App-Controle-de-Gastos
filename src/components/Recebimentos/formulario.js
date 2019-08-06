@@ -3,7 +3,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
-
+import DatePicker from '../datePicker';
 const Formulario = (props) => (
     <View>
         <Input placeholder="Receber de....."
@@ -16,6 +16,7 @@ const Formulario = (props) => (
             value={props.valor}
             onChangeText={valor => props.callBackValor(valor)}
         />
+        <DatePicker setDate={props.callBackDate} date={props.date}/>
     </View>
 );
 

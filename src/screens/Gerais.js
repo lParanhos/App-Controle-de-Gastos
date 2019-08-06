@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    View, Text, ImageBackground, FlatList, StyleSheet, TouchableOpacity,
+    View, FlatList, StyleSheet, PanResponder, Animated,
     Alert, ToastAndroid, TouchableHighlight, ActivityIndicator
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -16,7 +16,7 @@ class Gerais extends Component {
         this.state = {
             loading: true,
             registros: [],
-
+            show: true
         }
     }
     componentDidMount() {
@@ -78,8 +78,8 @@ class Gerais extends Component {
                     style={{ flex: 1 }}                    >
                     <Header tittle="A Receber" />
                     {loading ? (<ActivityIndicator size={100} color="#0000ff" />) : (
-                        <FlatList data={this.state.registros}
-                            keyExtractor={item => item.id}
+                        <FlatList data={this.state.registros} onScrollBeginDrag={() => this.setState({ show: !this.state.show })}
+                            keyExtractor={item => item.id}  /* onScrollEndDrag={() => this.setState({ show: true })} */ 
                             renderItem={({ item }) => {
                                 return (
                                     <TouchableHighlight onLongPress={() => this.handleDelete(item.id)}
@@ -95,10 +95,10 @@ class Gerais extends Component {
                         />
                     )}
                 </LinearGradient>
-                <ActionButton buttonColor="#48A2F8"
+                {this.state.show ? <ActionButton buttonColor="#48A2F8"
                     renderIcon={() =>
                         <Icon style={{ justifyContent: "center" }} name="plus" size={25} color="#fff" />}
-                    onPress={() => navigate('AddRec')} />
+                    onPress={() => navigate('AddRec')} /> : null}
             </View>
         )
     }

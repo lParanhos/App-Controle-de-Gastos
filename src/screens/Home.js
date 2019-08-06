@@ -11,8 +11,8 @@ class App extends Component {
   state = {
     loading: true,
     values: {},
-    mes: '',
-    ano: '',
+    mes: new Date().getMonth() + 1,
+    ano: new Date().getFullYear(),
     loadingCard: false,
   }
 

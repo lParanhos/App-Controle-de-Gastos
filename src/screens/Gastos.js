@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    View, Text, ImageBackground, FlatList, StyleSheet, TouchableOpacity,
+    View, Text, FlatList, StyleSheet, TouchableOpacity,
     Alert, ToastAndroid, TouchableHighlight, ActivityIndicator,
 } from 'react-native';
 import ActionButton from 'react-native-action-button';
@@ -16,8 +16,8 @@ export default class Gasto extends Component {
             loading: true,
             gastos: [],
             mes: new Date().getMonth() + 1,
-            ano: new Date().getFullYear()
-
+            ano: new Date().getFullYear(),
+            show: true
         }
     }
     componentDidMount() {
@@ -31,10 +31,14 @@ export default class Gasto extends Component {
     refresh = (mes, ano) => {
         this.setState({ loading: true })
         console.log(mes, ano)
-        fetch(`https://projetogastos.herokuapp.com/gastos/0${mes}-${ano}`)
+        fetch(`https://projetogastos.herokuapp.com/gastos/${mes}-${ano}`)
             .then(res => res.json())
             .then(gastos => { this.setState({ loading: false, gastos }) })
     }
+
+    handleFilter = (date) =>
+        this.setState({ mes: new Date(date).getMonth() + 1, ano: new Date(date).getFullYear() },
+            this.refresh(new Date(date).getMonth() + 1, new Date(date).getFullYear()))
 
     handleDelete = (id) => {
         Alert.alert('Aviso !', 'Deseja mesmo excluir esse registro ? ',
@@ -47,7 +51,7 @@ export default class Gasto extends Component {
                 {
                     text: 'Exluir',
                     onPress: () => {
-                        fetch(`https://projetogastos.herokuapp.com/gastos/${id}`, {
+                        fetch(`https://projetogastos.herokuapp.com/gasto/${id}`, {
                             method: 'DELETE',
                             headers: {
                                 'Accept': 'application/json',
@@ -60,7 +64,7 @@ export default class Gasto extends Component {
                                  * um array com os item que restaram no banco
                                  */
                                 ToastAndroid.show('Excluido com sucesso !', ToastAndroid.LONG);
-                                this.refresh();
+                                this.refresh(this.state.mes, this.state.ano);
                             })
                             .catch(err => {
                                 console.log(err);
@@ -78,13 +82,13 @@ export default class Gasto extends Component {
         console.info("gastos=>", this.state.gastos)
         return (
             <View style={styles.container}>
-                <Header tittle="Registros de Gastos" />
+                <Header tittle="Registros de Gastos" filter callback={this.handleFilter} />
                 <LinearGradient
                     locations={[0, 0.5, 0.6]}
                     colors={['#051937', '#008793', '#004d7a']}
                     style={{ flex: 1 }}                    >
                     {loading ? (<ActivityIndicator size={100} color="#0000ff" />) : (
-                        <FlatList data={this.state.gastos}
+                        <FlatList data={this.state.gastos} onScrollBeginDrag={() => this.setState({ show: !this.state.show })}
                             keyExtractor={item => item.id}
                             renderItem={({ item }) => {
                                 return (
@@ -92,13 +96,16 @@ export default class Gasto extends Component {
                                         onPress={() => navigate('EditGasto', {
                                             itemID: item.id,
                                             itemLocal: item.local,
-                                            itemValor: item.valor
+                                            itemValor: item.valor,
+                                            itemParcelas: item.parcela ? item.parcela.split('/')[1] : '',
+                                            itemVencimento: item.vencimento
                                         })}
                                     >
                                         <View style={styles.resgistro} >
                                             <View>
                                                 <Text style={styles.local}>{item.local}</Text>
-                                                <Text style={styles.info}>Parcela: </Text>
+                                                <Text style={styles.info}>Parcela: <Text style={styles.data}>{item.parcela} </Text> </Text>
+                                                <Text style={styles.info}>Data de vencimento: <Text style={styles.data}>{item.vencimento} </Text> </Text>
                                                 <Text style={styles.info}>Data de lançamento: <Text style={styles.data}>{item.lancamento} </Text> </Text>
                                             </View>
                                             <Text style={styles.valor}>R$ {item.valor}</Text>
@@ -110,10 +117,10 @@ export default class Gasto extends Component {
                     )}
 
                 </LinearGradient>
-                <ActionButton buttonColor="#48A2F8"
-                    renderIcon={() => 
-                        <Icon style={{justifyContent: "center"}} name="plus" size={25} color="#fff"/> }
-                    onPress={() => navigate('AddGasto')} />
+                {this.state.show ? <ActionButton buttonColor="#48A2F8"
+                    renderIcon={() =>
+                        <Icon style={{ justifyContent: "center" }} name="plus" size={25} color="#fff" />}
+                    onPress={() => navigate('AddGasto')} /> : null}
             </View>
         );
     }

@@ -16,21 +16,23 @@ class Gerais extends Component {
         this.state = {
             loading: true,
             registros: [],
-            show: true
+            show: true,
+            mes: new Date().getMonth() + 1,
+            ano: new Date().getFullYear(),
         }
     }
     componentDidMount() {
         const { navigation } = this.props
         this.focusListener = navigation.addListener("didFocus", () => {
-            this.refresh();
+            this.refresh(this.state.mes, this.state.ano);
         })
     }
 
-    refresh = () => {
+    refresh = (mes, ano) => {
         this.setState({ loading: true })
-        fetch('https://projetogastos.herokuapp.com/receber')
+        fetch(`https://projetogastos.herokuapp.com/receber/${mes}-${ano}`)
             .then(res => res.json())
-            .then(registros => { this.setState({ loading: false, registros }) })
+            .then(registros => { console.log(registros) , this.setState({ loading: false, registros }) })
     }
 
     handleDelete = (id) => {
@@ -57,7 +59,7 @@ class Gerais extends Component {
                                  * um array com os item que restaram no banco
                                  */
                                 ToastAndroid.show('Excluido com sucesso !', ToastAndroid.LONG);
-                                this.refresh();
+                                this.refresh(this.state.mes, this.state.ano);
                             })
                             .catch(err => {
                                 console.log(err);
@@ -67,6 +69,11 @@ class Gerais extends Component {
                 }
             ])
     }
+
+    handleFilter = (date) =>
+        this.setState({ mes: new Date(date).getMonth() + 1, ano: new Date(date).getFullYear() },
+            this.refresh(new Date(date).getMonth() + 1, new Date(date).getFullYear()))
+
     render() {
         const { loading } = this.state;
         const { navigate } = this.props.navigation;
@@ -76,10 +83,10 @@ class Gerais extends Component {
                     locations={[0, 0.5, 0.6]}
                     colors={['#051937', '#008793', '#004d7a']}
                     style={{ flex: 1 }}                    >
-                    <Header tittle="A Receber" />
+                    <Header tittle="A Receber" filter callback={this.handleFilter} />
                     {loading ? (<ActivityIndicator size={100} color="#0000ff" />) : (
                         <FlatList data={this.state.registros} onScrollBeginDrag={() => this.setState({ show: !this.state.show })}
-                            keyExtractor={item => item.id}  /* onScrollEndDrag={() => this.setState({ show: true })} */ 
+                            keyExtractor={item => item.id}  /* onScrollEndDrag={() => this.setState({ show: true })} */
                             renderItem={({ item }) => {
                                 return (
                                     <TouchableHighlight onLongPress={() => this.handleDelete(item.id)}
